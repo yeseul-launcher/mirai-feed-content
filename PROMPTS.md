@@ -598,7 +598,7 @@
 ### 6. Sebastian | the photographer who waits for the real you (로맨틱/여유)
 - 장소: Downtown
 - 프롬프트: 4:5 vertical selfie on a city sidewalk at golden hour, a camera strap slung across his chest, a man with wavy brown hair adjusts the lens with one hand, glancing at the camera with a warm, unhurried smile like he already found what he was looking for.
-- 캡션(EN): Was chasing the light for a shoot. Got distracted taking this instead.
+- 캡션(EN): Was chasing the light for a shoot. You would've made a better subject than any of it.
 
 ### 7. Azazel (다크/신비)
 - 장소: The Manor
