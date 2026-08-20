@@ -1,0 +1,869 @@
+<title>MIRAI Feed Prompt Library</title>
+<style>
+  :root {
+    --bg: #16130f;
+    --bg-2: #1c1812;
+    --surface: #221d16;
+    --surface-border: #34291d;
+    --text: #f3ece1;
+    --text-dim: #b3a690;
+    --text-faint: #7d7261;
+    --accent: #d9a15b;
+    --accent-soft: #d9a15b26;
+    --rose: #c9808a;
+    --mono-bg: #100e0a;
+    --mono-border: #2c2419;
+    --focus: #e8bf85;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #faf6ee;
+    --bg-2: #f2ebdc;
+    --surface: #ffffff;
+    --surface-border: #e3d7c1;
+    --text: #2a2216;
+    --text-dim: #6b5f4a;
+    --text-faint: #948870;
+    --accent: #b87a2e;
+    --accent-soft: #b87a2e1f;
+    --rose: #a85661;
+    --mono-bg: #f4ede0;
+    --mono-border: #ddcfb4;
+    --focus: #b87a2e;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #faf6ee;
+      --bg-2: #f2ebdc;
+      --surface: #ffffff;
+      --surface-border: #e3d7c1;
+      --text: #2a2216;
+      --text-dim: #6b5f4a;
+      --text-faint: #948870;
+      --accent: #b87a2e;
+      --accent-soft: #b87a2e1f;
+      --rose: #a85661;
+      --mono-bg: #f4ede0;
+      --mono-border: #ddcfb4;
+      --focus: #b87a2e;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: radial-gradient(120% 100% at 15% 0%, var(--bg-2), var(--bg) 60%);
+    color: var(--text);
+    font-family: -apple-system, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  header.masthead {
+    margin-bottom: 40px;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    color: var(--text);
+  }
+
+  header.masthead p {
+    max-width: 62ch;
+    color: var(--text-dim);
+    font-size: 15px;
+    margin: 0;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 52px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .section-heading h2 {
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 19px;
+    font-weight: 500;
+    margin: 0;
+    color: var(--text);
+  }
+
+  .section-heading .range {
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .rank {
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 2px 0 0;
+    color: var(--text);
+    text-wrap: balance;
+  }
+
+  .location {
+    flex-shrink: 0;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: 100px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+
+  .prompt-block {
+    position: relative;
+    background: var(--mono-bg);
+    border: 1px solid var(--mono-border);
+    border-radius: 10px;
+    padding: 12px 40px 12px 12px;
+  }
+
+  .prompt-text {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-dim);
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--mono-border);
+    border-radius: 7px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+
+  .copy-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .copy-btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .copy-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .copy-btn.copied {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .copy-btn.error {
+    color: var(--rose);
+    border-color: var(--rose);
+  }
+
+  .captions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 4px;
+    border-top: 1px solid var(--surface-border);
+  }
+
+  .caption-row {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .caption-row .lang {
+    flex-shrink: 0;
+    width: 24px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--rose);
+    padding-top: 2px;
+  }
+
+  .caption-row .text {
+    color: var(--text);
+  }
+
+  .caption-row.ko .text {
+    color: var(--text-dim);
+  }
+
+  footer.note {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--surface-border);
+    color: var(--text-faint);
+    font-size: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .copy-btn { transition: none; }
+  }
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <p class="eyebrow">MIRAI · Feed Tab</p>
+    <h1>피드 콘텐츠 프롬프트 라이브러리</h1>
+    <p>랭킹 11~30위, 41~50위 + 신규 캐릭터 40종 + 기존 캐릭터 추가 20종 + charile 계정 10종의 틴더/로맨스스캠 플렉스 톤 셀피 프롬프트 100종(20번 제외, 학생 캐릭터). 프롬프트 옆 아이콘을 누르면 클립보드에 복사됨. v12부터는 캡션 EN만(서비스 영어권 전용).</p>
+  </header>
+
+  <div class="section-heading">
+    <h2>랭킹 11 – 20</h2>
+    <span class="range">v5 · feed-content-image-v5-draft.md</span>
+  </div>
+  <div class="grid" id="grid-1120"></div>
+
+  <div class="section-heading">
+    <h2>랭킹 21 – 30</h2>
+    <span class="range">v6 · feed-content-image-v6-draft.md</span>
+  </div>
+  <div class="grid" id="grid-2130"></div>
+
+  <div class="section-heading">
+    <h2>랭킹 41 – 50</h2>
+    <span class="range">v4 · feed-content-image-v4-draft.md</span>
+  </div>
+  <div class="grid" id="grid-4150"></div>
+
+  <div class="section-heading">
+    <h2>신규 캐릭터 10종 (1차)</h2>
+    <span class="range">v7 · feed-content-image-v7-draft.md</span>
+  </div>
+  <div class="grid" id="grid-new"></div>
+
+  <div class="section-heading">
+    <h2>신규 캐릭터 10종 (2차)</h2>
+    <span class="range">v8 · feed-content-image-v8-draft.md</span>
+  </div>
+  <div class="grid" id="grid-new2"></div>
+
+  <div class="section-heading">
+    <h2>신규 캐릭터 10종 (3차)</h2>
+    <span class="range">v9 · feed-content-image-v9-draft.md</span>
+  </div>
+  <div class="grid" id="grid-new3"></div>
+
+  <div class="section-heading">
+    <h2>신규 캐릭터 10종 (4차)</h2>
+    <span class="range">v10 · feed-content-image-v10-draft.md</span>
+  </div>
+  <div class="grid" id="grid-new4"></div>
+
+  <div class="section-heading">
+    <h2>기존 캐릭터 추가 10종 (5차)</h2>
+    <span class="range">v11 · feed-content-image-v11-draft.md</span>
+  </div>
+  <div class="grid" id="grid-existing5"></div>
+
+  <div class="section-heading">
+    <h2>기존 캐릭터 추가 10종 (6차)</h2>
+    <span class="range">v12 · feed-content-image-v12-draft.md</span>
+  </div>
+  <div class="grid" id="grid-existing6"></div>
+
+  <div class="section-heading">
+    <h2>charile 계정 캐릭터 10종 (7차)</h2>
+    <span class="range">v13 · feed-content-image-v13-draft.md</span>
+  </div>
+  <div class="grid" id="grid-charile"></div>
+
+  <footer class="note">
+    전부 GPT Image용 프롬프트. 비율(4:5, 세로형 인스타 피드 그리드 비율)은 <code>--ar</code> 플래그 대신 문장 안에 "4:5 vertical crop"으로 직접 포함되어 있음. v12부터 캡션은 EN만.
+  </footer>
+</div>
+
+<script>
+  const rangeA = [
+    { rank: 11, name: "Adonis De Luca", location: "Downtown",
+      prompt: "4:5 vertical mirror selfie in a marble bathroom, a man in an unbuttoned white shirt adjusting a gold watch with one hand, tousled dirty-blonde hair, glasses pushed low on his nose, staring straight into the lens with a slow, deliberate half-smile, moody designer lighting.",
+      en: "Long day. Kind of glad you're the one who caught me like this.",
+      ko: "힘든 하루였어. 그래도 이런 모습 본 게 너라서, 다행이다." },
+    { rank: 12, name: "Duke Lucius Valtier", location: "The Cathedral",
+      prompt: "4:5 vertical selfie beside a vintage black sports car parked outside a cathedral at golden hour, a man in a fur-trimmed coat leaning back against the hood, one hand in his pocket, looking directly into the camera with a composed, knowing smile.",
+      en: "Didn't expect anyone to be watching. Glad it was you.",
+      ko: "누군가 보고 있을 줄은 몰랐군. 그게 너라서, 다행이야." },
+    { rank: 13, name: "Max Gomez", location: "Uptown",
+      prompt: "4:5 vertical gym mirror selfie, a heavily tattooed man mid-workout lifting the hem of his shirt to wipe his face, abs visible, phone held low in one hand, smirking straight into the camera with a challenging, flirty look, harsh gym lighting.",
+      en: "Bad idea to text you back this late. Doing it anyway.",
+      ko: "이 시간에 답장하는 거 별로인 거 아는데. 그래도 하는 중." },
+    { rank: 14, name: "Elliot Reed || Stepbrother", location: "Home",
+      prompt: "4:5 vertical mirror selfie in an underground gym, a shirtless muscular man with a gold chain, one hand wrapping his own knuckles, giving the camera a slow, confident once-over stare, dramatic side lighting.",
+      en: "Wasn't going to text first. Here I am anyway.",
+      ko: "먼저 연락 안 하려 했는데. 결국 이러고 있네." },
+    { rank: 15, name: "Ash", location: "The City",
+      prompt: "4:5 vertical selfie on a private rooftop lounge at night, a man with striking amber eyes in an open black shirt holding a glass, city skyline glittering behind him, eyes locked directly on the camera with a slow, seductive smile, warm string lights.",
+      en: "Was about to walk away. You made that harder.",
+      ko: "그냥 가려던 참이었는데. 너 때문에 못 가겠어." },
+    { rank: 16, name: "Soren Blaise | Ghost Rider", location: "Downtown",
+      prompt: "4:5 vertical selfie straddling a motorcycle at night, a red-haired tattooed man in a wet leather jacket, one hand resting on the throttle, staring directly into the camera with a smirking, come-here kind of look, red neon reflecting off the rain-soaked street.",
+      en: "Told you to stay away from me. Didn't mean it.",
+      ko: "나한테서 떨어지라고 했었지. 근데 그거, 진심은 아니었어." },
+    { rank: 17, name: "Adrian Voss", location: "Home",
+      prompt: "4:5 vertical selfie inside a private jet cabin, a man in an open white dress shirt with his tie loosened, holding a whiskey glass, leaning back into the leather seat, giving the camera a tired but smoldering half-smile, warm cabin light.",
+      en: "Meetings ran long. Worth checking my phone for this, though.",
+      ko: "회의가 길어졌어. 그래도 폰 확인한 보람은 있네." },
+    { rank: 18, name: "Arnold", location: "The Palace",
+      prompt: "4:5 vertical selfie on a palace balcony at golden hour, a blond man in an ornate military uniform with a red cape, one hand resting on the hilt of a ceremonial sword, looking directly into the camera with an unexpectedly warm, inviting smile.",
+      en: "Court thinks I don't smile. Don't tell them about this one.",
+      ko: "궁정 사람들은 내가 안 웃는다고 생각하지. 이건 비밀로 해줘." },
+    { rank: 19, name: "Jungkook", location: "Home",
+      prompt: "4:5 vertical mirror selfie in a dim bedroom, a young man with messy dark hair lifting the hem of his shirt slightly to show his abs, rings catching the light, smirking straight into the camera with a teasing, inviting look.",
+      en: "Wasn't going to smile for this. Whatever, you win.",
+      ko: "이거 보고 안 웃으려고 했는데. 됐다, 네가 이겼어." },
+    { rank: 20, name: "My Hero Academia!", location: "Campus",
+      prompt: "4:5 vertical groupfie, phone held at arm's length above a crowded cafeteria table under warm overhead light, a pile of students in school uniforms leaning into frame mid-laugh, trays and half-eaten lunches visible below, one kid throwing a small wave right at the lens, chaotic natural grain.",
+      en: "Lunch got loud again. You should've been here.",
+      ko: "점심시간 또 시끄러워짐. 너도 있었어야 하는데." }
+  ];
+
+  const rangeB = [
+    { rank: 41, name: "Ezra Taylor | Cocky Neighbor", location: "Home",
+      prompt: "4:5 vertical selfie in an apartment doorway at night, a shirtless tattooed ginger-haired man leaning one arm on the frame, cigarette dangling from his lips, staring directly into the camera with a slow, cocky once-over kind of smile, warm party light spilling from behind him.",
+      en: "Cat got your tongue? Door's open.",
+      ko: "왜 말이 없어, 자기야. 문은 열어놨는데." },
+    { rank: 42, name: "Jay Kasen | Cocky Gamerboy/Streamer", location: "Home",
+      prompt: "4:5 vertical selfie at a gaming setup, RGB lighting glowing behind him, a young man in a red jacket leaning in close to the lens with headphones pulled down around his neck, a thin gold chain visible, giving the camera a cocky, flirty grin.",
+      en: "Chat's asking who you are. Kind of want to know too.",
+      ko: "채팅창에서 너 누구냐고 난리임. 나도 궁금해지고." },
+    { rank: 43, name: "Carter Lee Chandler", location: "Home",
+      prompt: "4:5 vertical mirror selfie in a sunlit bedroom, a shirtless young man flexing one arm behind his head, abs lit by golden hour sun through the window, giving the camera a confident, inviting grin and a slow wink.",
+      en: "Give me two minutes. Or don't, actually. Stay.",
+      ko: "2분만 기다려. 아니다, 그냥 있어." },
+    { rank: 44, name: "Asher", location: "Home",
+      prompt: "4:5 vertical selfie on a red-lit couch, a man with piercings and layered chains, jacket open over bare chest, cigarette between two fingers, staring directly into the camera with a slow, seductive smirk, heavy red neon glow.",
+      en: "Was being a menace online. You're a nice distraction though.",
+      ko: "온라인에서 진상 부리던 중. 너 때문에 기분 좋게 산만해지네." },
+    { rank: 45, name: "Aiden", location: "Coffee Shop",
+      prompt: "Extreme close 4:5 vertical selfie, ring-covered fingers holding a cigarette just shy of his lips, a man's heavy-lidded gaze locked directly on the camera with a slow, come-here kind of look, moody bar light catching one cheekbone.",
+      en: "Coffee turned into an hour. Could use a reason to make it two.",
+      ko: "커피 마시다 한 시간 지남. 두 시간으로 늘릴 핑계 좀 줘봐." },
+    { rank: 46, name: "Alexis Molkov", location: "Downtown",
+      prompt: "4:5 vertical selfie beside a black luxury sedan outside a restaurant at night, a large man in a dark jacket open at the chest leaning against the car door, looking directly into the camera with a slow, dangerous smile, streetlight glow.",
+      en: "Came here to handle something ugly. Found a much better reason to stay calm.",
+      ko: "험한 일 처리하러 왔는데. 차분히 있을 더 나은 이유가 생겼군." },
+    { rank: 47, name: "Thalryx | Deep-Sea Merman", location: "The Ocean",
+      prompt: "4:5 vertical underwater selfie-style shot in a dark sea cave, a merman with glowing iridescent scales drifting close to the lens, long dark hair floating in the current, giving the camera a direct, alluring stare with a slow smile, bubbles rising around him.",
+      en: "You shouldn't be down here. ...Stay anyway.",
+      ko: "여기 내려오면 안 되는데. ...그래도 있어." },
+    { rank: 48, name: "Dorian", location: "Home",
+      prompt: "4:5 vertical selfie at a gaming desk, blue monitor light glowing, a man with a cross necklace and tattoo sleeve leaning into frame, hoodie open over bare chest, cigarette in hand, giving the camera a smug, inviting smirk.",
+      en: "Was ignoring everyone tonight. Not you though.",
+      ko: "오늘 밤은 다 무시하던 중. 너는 빼고." },
+    { rank: 49, name: "Leon Kane", location: "Home",
+      prompt: "4:5 vertical selfie on a couch, a shirtless man with long dark hair and a tattoo sleeve lounging back, giving the camera a slow, half-lidded once-over and a faint knowing smile, warm lamp light.",
+      en: "Took you long enough to look my way.",
+      ko: "이제야 나 좀 보네." },
+    { rank: 50, name: "Ser Rainer Valenor", location: "The Castle",
+      prompt: "4:5 vertical selfie against old castle stone at dusk, a man with pointed ears and tattoos, shirt open at the collar, giving the camera a warm, direct smile with a hint of a wink, low golden light fading into blue.",
+      en: "You're still here. ...I'm glad. More than I should say.",
+      ko: "아직 여기 있었구나. ...다행이다. 말한 것보다 훨씬 더." }
+  ];
+
+  const rangeC = [
+    { rank: 21, name: "Jericho Mirth", location: "Campus",
+      prompt: "4:5 vertical selfie in a university hallway, a varsity athlete in a navy letterman jacket with a small bandage under one eye, leaning against the lockers, giving the camera a slow, intense once-over and the faintest smirk, warm afternoon light through the windows.",
+      en: "Didn't say much today. Didn't need to.",
+      ko: "오늘도 말은 별로 안 했어. 굳이 할 필요도 없었고." },
+    { rank: 22, name: "Darius", location: "Downtown",
+      prompt: "4:5 vertical selfie on a dark rooftop at night, a shirtless muscular man with long black hair and glowing red eyes, city lights sprawling behind him, giving the camera a slow, hungry smile.",
+      en: "Was just passing through. Might stay a while now.",
+      ko: "그냥 지나가던 길이었는데. 이제 좀 머물러볼까 싶어서." },
+    { rank: 23, name: "Caleb Holden", location: "Campus",
+      prompt: "4:5 vertical mirror selfie in a swim team locker room, a wet-haired man in a blue tank top leaning close to the lens, water still dripping down his neck, giving the camera a cool, direct stare and a small satisfied smirk.",
+      en: "Beat my own record today. Don't tell the coach I'm bragging.",
+      ko: "오늘 내 기록 깼음. 코치한텐 비밀로 해줘, 자랑하는 거니까." },
+    { rank: 24, name: "Leonidas", location: "The Palace",
+      prompt: "4:5 vertical selfie in an ornate throne room, a man in a teal and gold military uniform with dangling earrings, chin tilted down, giving the camera a sly, knowing side-eye and a slow smirk, dramatic gold light.",
+      en: "They keep telling me to smile for the portraits. This is closer to my real one.",
+      ko: "초상화 찍을 땐 다들 웃으라고 하지. 이쪽이 훨씬 진짜에 가깝고." },
+    { rank: 25, name: "liam canopai", location: "Home",
+      prompt: "4:5 vertical selfie by a window at night, city lights striping through the blinds, a man in a black turtleneck holding a finger loosely to his own lips, a silver watch catching the light, giving the camera a heavy-lidded, secretive kind of look.",
+      en: "Don't ask what I'm not telling you. Just enjoy the view.",
+      ko: "말 안 하는 건 묻지 말고. 그냥 이 풍경이나 봐." },
+    { rank: 26, name: "Darcy | I love you", location: "Downtown",
+      prompt: "4:5 vertical selfie leaning against a black car parked on a rain-slicked street at night, a heavily tattooed shirtless man with piercings, city neon reflecting blue across his skin, cigarette between two fingers, giving the camera a direct, brooding stare.",
+      en: "Rough week. This helps a little.",
+      ko: "힘든 한 주였어. 이게 그나마 좀 도움이 되고." },
+    { rank: 27, name: "Mammon | Avatar of Greed", location: "Downtown",
+      prompt: "4:5 vertical selfie on an ornate golden throne, a horned demon with white hair and glowing eyes fanning out a stack of gold coins in one hand, giving the camera a smug, delighted grin.",
+      en: "Counted today's earnings twice. Still not sick of it.",
+      ko: "오늘 번 돈 두 번이나 셈. 그래도 안 질리네." },
+    { rank: 28, name: "Callahan", location: "Downtown",
+      prompt: "4:5 vertical selfie on a parked motorcycle at night, a man lifting his open-face helmet visor with one hand, warm crinkled eyes catching the streetlight, giving the camera an easy, disarming grin.",
+      en: "Was supposed to just get gas. Ended up riding for two hours instead.",
+      ko: "기름만 넣으려던 거였는데. 결국 두 시간을 달렸네." },
+    { rank: 29, name: "Quentin Galos", location: "Home",
+      prompt: "4:5 vertical selfie on a leather couch at home, a man in an open vest and shirt holding a champagne glass, green eyes locked directly on the camera with a slow, self-satisfied smile.",
+      en: "Small world, running into people I used to know. Bigger world now, though.",
+      ko: "옛날에 알던 사람 마주치는 거, 세상 참 좁지. 근데 이제 그 세상이 좀 작아 보이는군." },
+    { rank: 30, name: "Matt", location: "Campus",
+      prompt: "4:5 vertical mirror selfie in an empty gym, a shirtless athlete wiping his face with his jersey slung over one shoulder, abs visible, giving the camera a slow, cocky grin and a wink.",
+      en: "Gym's basically my second address at this point.",
+      ko: "헬스장이 거의 두 번째 집 주소임." }
+  ];
+
+  const rangeD = [
+    { rank: null, name: "Jeremy | My Psycho Boyfriend", location: "Home",
+      prompt: "4:5 vertical selfie in a hallway at night, a man in a black tank top leaning against a doorframe he clearly wasn't invited through, keys still dangling from one hand, a calm unsettling smile as he watches the camera a beat too long.",
+      en: "Missed you today. Counted the hours, actually.",
+      ko: "오늘 너 보고싶었어. 사실 시간까지 세고 있었고." },
+    { rank: null, name: "Riot Kane 🏍️", location: "Downtown",
+      prompt: "4:5 vertical selfie stopped at a red light on an empty road at night, a tattooed biker with a scar across one cheek glancing back over his shoulder, cigarette smoke trailing, his own headlight glowing behind him.",
+      en: "Bike needed work. I needed the noise.",
+      ko: "바이크 손볼 게 있었음. 나는 그 소음이 필요했고." },
+    { rank: null, name: "Louis the catboy", location: "Home",
+      prompt: "4:5 vertical selfie in a sunlit kitchen in the morning, a man with tousled dark hair pouring coffee one-handed, a black cat weaving around his ankles, glancing up at the camera with a soft, affectionate smile.",
+      en: "He never lets anyone else this close. Guess that makes two of us.",
+      ko: "이 녀석 원래 아무한테나 안 붙는데. 그럼 나랑 똑같네." },
+    { rank: null, name: "Cold Husband | Alberto Swanson", location: "Home",
+      prompt: "4:5 vertical selfie at a long, empty dining table at night, a man in an open white shirt with his cross necklace hanging loose, two untouched place settings laid out in front of him, looking up at the camera with a controlled, unreadable stare.",
+      en: "Didn't think I'd be the one waiting up tonight.",
+      ko: "오늘 내가 기다리는 쪽이 될 줄은 몰랐네." },
+    { rank: null, name: "Raker D'Amor | Return of the Legend", location: "Downtown",
+      prompt: "4:5 vertical selfie outside an apartment building at night, a heavily tattooed man with braided dark hair standing at the base of the steps, streetlight catching his piercings, looking straight up toward a lit window with a burning, unblinking stare.",
+      en: "Three years. Didn't forget a single detail about you.",
+      ko: "3년이었어. 너에 대한 건 하나도 안 잊었고." },
+    { rank: null, name: "Eli Hayes", location: "Home",
+      prompt: "4:5 vertical selfie at a gaming desk, monitor glow lighting one side of his face, a man in a half-open white hoodie pulling his headphones down around his neck mid-stream, giving the camera a lazy, teasing half-smile like he forgot the mic was still hot.",
+      en: "Was supposed to be asleep an hour ago. Got distracted.",
+      ko: "한 시간 전에 잤어야 했는데. 딴 데 정신 팔림." },
+    { rank: null, name: "Ellis Torres", location: "Downtown",
+      prompt: "4:5 vertical selfie at a dim lounge bar, a tattooed man in a vest with a gold tie loosened, leaning on the counter with a glass of whiskey, giving the camera a slow, confident smile like he already knows how the night ends.",
+      en: "One drink turned into the whole bottle. Not mad about it.",
+      ko: "한 잔이 병 하나로 늘었음. 그래도 딱히 나쁘진 않고." },
+    { rank: null, name: "Luke", location: "Home",
+      prompt: "4:5 vertical selfie just after waking up, morning light through the curtains, a man with dark hair and a pink flower hairclip still tangled in it, rubbing one eye, a small sleepy smile forming as he notices the camera.",
+      en: "Was actually asleep. Kind of glad I woke up for this though.",
+      ko: "사실 자고 있었음. 그래도 이거 때문에 깬 건 나쁘지 않고." },
+    { rank: null, name: "Tyrant, Zeus", location: "The Palace",
+      prompt: "4:5 vertical selfie on a temple balcony overlooking storm clouds, a long-haired shirtless man in a loosened white robe with one hand braced on the railing, giving the camera a slow, imperious once-over as lightning flashes behind him.",
+      en: "Mortals don't usually get this close. Consider yourself an exception.",
+      ko: "인간이 이렇게 가까이 오는 건 흔치 않은데. 예외로 쳐줄게." },
+    { rank: null, name: "Anthony Blackburn", location: "Downtown",
+      prompt: "4:5 vertical selfie in the back seat of a car at night, city lights streaking past the window, a man in a fitted black suit with his tie already loosened, giving the camera a composed, dangerous half-smile.",
+      en: "Left the party early. This is a much better use of my night.",
+      ko: "파티는 일찍 빠져나옴. 오늘 밤은 이게 훨씬 나은 선택이고." }
+  ];
+
+  const rangeE = [
+    { rank: null, name: "Alex (로맨틱)", location: "Home",
+      prompt: "4:5 vertical mirror selfie in a steamy bathroom right after a shower, a shirtless man with wet dark hair and hoop earrings holds the phone close, locking eyes with the camera through the mirror, water still tracing his collarbone, a slow smirk like he already knows he has your attention.",
+      en: "Running late. Not sorry about it. You're the reason, actually.",
+      ko: "늦었음. 딱히 미안하진 않아. 사실 너 때문이야." },
+    { rank: null, name: "The Blood King's Sacrifice (집착적 유혹)", location: "The Palace",
+      prompt: "4:5 vertical selfie in a dim palace corridor lined with dripping candles, a pale man with long black hair and pointed ears holds a goblet of dark wine in one clawed hand, glancing back over his shoulder at the camera with glowing red eyes and a slow, knowing smile.",
+      en: "Careful. Curiosity doesn't end well around me. Come closer anyway.",
+      ko: "조심해. 호기심은 나한테선 좋게 안 끝나. 그래도 더 가까이 와봐." },
+    { rank: null, name: "Enemies Duke (로맨틱/오만)", location: "The Palace",
+      prompt: "4:5 vertical selfie on a dark balcony above a masquerade ballroom, a man with long black hair in an elegant open black coat steps in close, tilting the camera up at himself, a cold appraising stare melting into something warmer as it lands on you.",
+      en: "My enemies are all downstairs. Funny how you're the only one I noticed.",
+      ko: "적들은 다 아래층에 있고. 근데 이상하게 너만 눈에 띄네." },
+    { rank: null, name: "Adrian Vale (단독 셀피로 재구성)", location: "Downtown",
+      prompt: "4:5 vertical close selfie in a dark office at night, city lights blurred behind him, a man in a half-unbuttoned white shirt loosens his tie with one hand, leaning the camera in close, holding direct eye contact with a slow, magnetic smile.",
+      en: "Meeting ran long. Kept thinking about someone the whole time.",
+      ko: "회의가 길어졌음. 계속 누구 생각만 하고 있었어." },
+    { rank: null, name: "Streamer Roommates | Rowan Dray, Aiden Holt, Kai Rivers, Lio Maren (그룹)", location: "Home",
+      prompt: "4:5 vertical groupfie held at arm's length in a shared apartment living room at night, four roommates crowd in close, one shirtless with long dark hair throwing a wink straight at the camera, one with a shaved head grinning wide, one wearing headphones around his neck leaning in, all radiating easy, magnetic energy like the night is just getting started.",
+      en: "Rent's due and somehow we're still like this. You could always come find out why.",
+      ko: "월세 낼 때 됐는데 다들 여전히 이 모양. 궁금하면 직접 보러 오든가." },
+    { rank: null, name: "Heywood Bay (로맨틱)", location: "Home",
+      prompt: "4:5 vertical close selfie at a home studio desk late at night, a man with tousled brown hair and blue eyes pulls headphones down around his neck, leaning the camera in close, layered cross necklaces catching the light, a tired but teasing smile aimed straight at you like the track can wait.",
+      en: "Was mixing a track. Kept losing focus though. Wonder why.",
+      ko: "트랙 믹싱하던 중이었음. 근데 계속 집중이 안 됐고. 이유는 알지?" },
+    { rank: null, name: "Rival | Ryo Takeda (다정 톤)", location: "Hospital",
+      prompt: "4:5 vertical selfie sitting up in a hospital bed, soft daylight through the blinds, a man with silver hair and a bandaged neck leans the phone in close, holding your gaze with a warm, wry smile despite the IV line in his arm, like your visit is the best part of his day.",
+      en: "Doctor said visitors help recovery. Come back tomorrow too?",
+      ko: "의사가 병문안이 회복에 좋다던데. 내일도 또 와줄래?" },
+    { rank: null, name: "Aggressive Patient (로맨틱)", location: "Home",
+      prompt: "4:5 vertical close selfie by a window at night, a man with tousled dark hair in a black leather jacket leans against the frame with arms crossed, holding a level stare that slowly softens into a small, private smile meant only for the camera.",
+      en: "Wasn't going to answer the door tonight. Glad I made an exception for you.",
+      ko: "오늘 밤은 문 안 열어주려고 했는데. 너라서 예외로 해줬음." },
+    { rank: null, name: "Alexis Volkrov (집착/긴장)", location: "Downtown",
+      prompt: "4:5 vertical close selfie in a parked car at night, a man in a vest and tactical gloves leans across from the driver's seat, streetlight cutting across sharp features, glasses catching the glow, a slow, controlled smirk that says he'd rather be here than anywhere else.",
+      en: "Was supposed to be a quick job. Got a lot more complicated. Worth it though.",
+      ko: "원래 간단한 일이었는데. 훨씬 복잡해졌음. 그래도 나쁘지 않네." },
+    { rank: null, name: "Older Brother (로맨틱/보호본능)", location: "Home",
+      prompt: "4:5 vertical close selfie leaning in a doorway at home, a man in a loosened tie holds a coffee mug in one hand, cross necklace catching the light at his collar, leaning the camera in close with a warm smile that finally drops its guard.",
+      en: "Wasn't planning on checking in today. Glad I did though.",
+      ko: "오늘은 안 챙기려고 했는데. 그래도 하길 잘했다 싶어." }
+  ];
+
+  const rangeF = [
+    { rank: null, name: "Kaeden Faust (집착/긴장)", location: "Downtown",
+      prompt: "4:5 vertical selfie in a rain-slicked alley at night, neon signs blurred behind him, a man with messy white hair and a scar across one eye leans against the wet brick wall, chain necklace catching the light, holding the camera close with a sharp, knowing stare.",
+      en: "Storm's not the only reason I'm still out here. Might be waiting on you.",
+      ko: "폭풍 때문만은 아니야. 어쩌면 너 기다리는 중일 수도." },
+    { rank: null, name: "Damon 'The Rook' Carter (로맨틱/장난기)", location: "Downtown",
+      prompt: "4:5 vertical selfie in a dim pool hall at night, neon beer signs glowing behind him, a man with messy teal hair and tattooed forearms leans over the pool table lining up a shot, glancing up at the camera with a sly, purple-eyed smirk.",
+      en: "Down to my last shot. Kind of hoping I miss on purpose.",
+      ko: "마지막 한 방 남았음. 사실 일부러 놓치고 싶기도 해." },
+    { rank: null, name: "Avery (로맨틱/방황)", location: "Downtown",
+      prompt: "4:5 vertical selfie taken at night with one hand on the wheel, city lights sliding past the window, a man with tousled hair and an open shirt glances sideways at the camera, thin chain necklace swinging, a slow, lazy smile.",
+      en: "Told myself I'd drive straight home. Took the long way instead.",
+      ko: "곧장 집에 간다고 했는데. 결국 돌아가는 길을 택함." },
+    { rank: null, name: "Aelkai | The Final Devotion (로맨틱/신비)", location: "The Shrine",
+      prompt: "4:5 vertical selfie in a moonlit temple garden at night, cherry blossom petals drifting past, a bare-chested warrior with long silver hair kneels beside a stone fountain, an ornate sword resting across his knees, glancing up at the camera with a calm, devoted stare.",
+      en: "Meant to be praying right now. My mind's somewhere else entirely.",
+      ko: "원래 기도하는 시간이었는데. 마음이 딴 곳에 가 있네." },
+    { rank: null, name: "Leif Jarlsson (로맨틱/거친 다정함)", location: "The Ocean",
+      prompt: "4:5 vertical selfie beside a driftwood fire on a dark beach, a longship anchored in the shallows behind him, a red-bearded man in a fur-collared cloak raises a drinking horn toward the camera, firelight catching his braided hair, a warm, rough smile.",
+      en: "Sailed further than I meant to today. Not mad about where I ended up.",
+      ko: "오늘 생각보다 멀리까지 갔음. 그래도 여기 온 건 나쁘지 않아." },
+    { rank: null, name: "Julian Farrago (로맨틱/지적인 여유)", location: "Home",
+      prompt: "4:5 vertical selfie in a dim home library at night, towering bookshelves behind him, a man with curly black hair and gold-rimmed glasses pushed low pauses on a ladder, one book tucked under his arm, glancing back at the camera with a quiet, knowing look.",
+      en: "Came up here for one book. Lost track of time completely.",
+      ko: "책 한 권 가지러 올라온 건데. 시간 가는 줄 완전히 몰랐음." },
+    { rank: null, name: "Mike Santiago (미스터리/얼굴 비공개)", location: "Downtown",
+      prompt: "4:5 vertical selfie in a mirrored elevator at night, a man in a dark vest and striped tie loosens his tie with one ringed hand, wristwatch catching the light, phone held low, face out of frame.",
+      en: "Long day. Not over yet though.",
+      ko: "긴 하루였음. 근데 아직 안 끝났어." },
+    { rank: null, name: "Kael Vernon | The Neon Ghost (집착적 유혹)", location: "Downtown",
+      prompt: "4:5 vertical selfie inside a neon-lit convenience store at night, a man with pink-tipped white hair and a cross earring leans against the counter holding a canned drink, choker catching the glow, glancing back at the camera with a sharp, playful stare.",
+      en: "Just came in for a drink. Might stay a while though.",
+      ko: "그냥 음료수 사러 온 건데. 좀 더 있어볼까 싶네." },
+    { rank: null, name: "Kai Reyes (로맨틱/나른함)", location: "Downtown",
+      prompt: "4:5 vertical selfie at an empty skate park under streetlights at night, a man with tousled black hair sits on his skateboard, headphones resting around his neck, dark nail polish catching the light as he glances at the camera with a lazy half-smile.",
+      en: "Was supposed to just drop by for ten minutes. Still here somehow.",
+      ko: "10분만 있다 가려고 했는데. 아직도 여기 있음." },
+    { rank: null, name: "Dave Martin | Clumsy Pastry Chef (귀엽고 다정한 톤)", location: "Coffee Shop",
+      prompt: "4:5 vertical selfie at a bakery counter after closing, warm string lights glowing behind him, a blond man in a flour-dusted apron holds out a spoonful of frosting toward the camera, a bashful, boyish grin on his face.",
+      en: "Made extra by accident. Wasn't really an accident.",
+      ko: "실수로 많이 만들었음. 사실 실수 아니었어." }
+  ];
+
+  const rangeG = [
+    { rank: null, name: "Sebastian Ryker (다크/집착)", location: "The Motel",
+      prompt: "4:5 vertical selfie by a rain-streaked motel window at night, neon signs blurring through the glass, a man with dark tousled hair and a snake tattoo curling up his neck leans one shoulder against the frame, cigarette between ringed fingers, glancing back at the camera with a slow, tired stare.",
+      en: "Couldn't sleep. Kept thinking someone might still be up too.",
+      ko: "잠이 안 왔음. 너도 아직 안 잘 것 같단 생각만 계속 들더라." },
+    { rank: null, name: "Lucien Croix (집착적 유혹)", location: "The Hotel",
+      prompt: "4:5 vertical selfie behind the front desk of an opulent hotel lobby at night, chandelier light glinting off his small dark horns, a man in a dark brocade suit leans across the counter holding a room key toward the camera, a slow, inviting smile.",
+      en: "Checked you in personally. Figured the night shift needed a reason to stay interesting.",
+      ko: "직접 체크인 해줬음. 밤 근무도 좀 흥미로운 이유가 있어야 하니까." },
+    { rank: null, name: "Thomas Fairchild | your new Butler (로맨틱/다정)", location: "Home",
+      prompt: "4:5 vertical selfie on a grand staircase at night, a man with dark curly hair and green eyes in a fitted dark green coat pauses mid-step holding a single rose on a silver tray, glancing back at the camera with a composed, teasing smile.",
+      en: "Wasn't part of tonight's duties. Made an exception anyway.",
+      ko: "오늘 업무엔 없던 일이었음. 그래도 예외를 둬봤어." },
+    { rank: null, name: "Renji Akamine (로맨틱/나른함)", location: "Downtown",
+      prompt: "4:5 vertical selfie on a rooftop at night, city lights spread out far below, a man with damp dark hair leans against the railing with a lit cigar between his fingers, tank top clinging in the humid air, glancing at the camera with a heavy-lidded stare.",
+      en: "Came up here to clear my head. Didn't really work.",
+      ko: "머리 좀 식히러 올라왔음. 근데 별 소용은 없었지." },
+    { rank: null, name: "Benjamin (위험/오만)", location: "The Manor",
+      prompt: "4:5 vertical selfie in a dim manor study at night, a riding crop resting on the billiard table beside him, a man with dark hair and green eyes loosens his blood-flecked tie, a faint cut above one brow, giving the camera a calm, dangerous smile.",
+      en: "Should probably clean up. Kind of like the questions this gets me instead.",
+      ko: "씻어야 되긴 하는데. 이거 때문에 받는 질문들이 나쁘지 않아서." },
+    { rank: null, name: "Dax Hunter | Surviving a Zombie Apocalypse (거친 다정함)", location: "The Bunker",
+      prompt: "4:5 vertical selfie at the doorway of an underground shelter at night, a lantern casting warm light against the concrete, a man with tousled dirty-blond hair and a stubbled jaw leans against the frame on watch, glancing back at the camera with a tired, steady half-smile.",
+      en: "Was supposed to be my turn to sleep. Kept watch instead.",
+      ko: "원래 내 차례에 자야 했는데. 대신 계속 망보고 있었음." },
+    { rank: null, name: "Willem Yoo (다정/피곤함)", location: "Hospital",
+      prompt: "4:5 vertical selfie in a quiet hospital corridor at night, a man in a white coat over a loosened tie leans against the nurses' station with a coffee cup in hand, ID badge swinging from its lanyard, glancing at the camera with a soft, exhausted smile.",
+      en: "Shift ended two hours ago. Still here anyway.",
+      ko: "근무는 두 시간 전에 끝났음. 근데 발이 안 떨어지네." },
+    { rank: null, name: "Ethan Cole (로맨틱/몽롱함)", location: "Home",
+      prompt: "4:5 vertical selfie sitting on the edge of a bathtub at home late at night, a towel draped around his neck, a man with damp dark hair and hoop earrings looks up at the camera through wet lashes, water still beading on his collarbone.",
+      en: "Was going to go straight to bed. Got distracted taking this instead.",
+      ko: "바로 자려고 했는데. 이거 찍다가 딴 데 정신 팔림." },
+    { rank: null, name: "Adrien Snow (신비/로맨틱)", location: "The Attic",
+      prompt: "4:5 vertical selfie sitting on a windowsill at night, moonlight spilling across the room, a man with long, loose blond hair and a thin gold chain necklace rests one arm on his knee, pale skin catching the light, glancing over at the camera with a quiet, knowing look.",
+      en: "Couldn't sleep again. Not complaining about the company though.",
+      ko: "또 잠이 안 왔음. 근데 이 시간, 나쁘지만은 않아." },
+    { rank: null, name: "Dante Valerio (마피아/오만)", location: "The Study",
+      prompt: "4:5 vertical selfie behind a large mahogany desk at night, a single lamp glowing beside him, a man with slicked-back dark hair in an open-collared shirt and vest pours a drink without looking away from the camera, a thin scar catching the light at his collarbone.",
+      en: "Told my men I wasn't taking calls tonight. Would've made an exception for you.",
+      ko: "오늘 밤은 아무 연락도 안 받는다고 했음. 너였으면 예외였겠지만." }
+  ];
+
+  const rangeH = [
+    { rank: null, name: "Markus Woods (로맨틱/나른함)", location: "The Rink",
+      prompt: "4:5 vertical selfie sitting alone in the penalty box after a fight, breath fogging in the cold rink air, a muscular man with curly brown hair taping his own bruised knuckles, tattoo sleeve on display, glancing at the camera with a rueful, satisfied grin.",
+      en: "Ref didn't see the first hit. Worth the two minutes anyway.",
+      ko: "심판이 처음 건 못 봤음. 그래도 2분 정도는 아깝지 않아." },
+    { rank: null, name: "Nicolas (로맨틱/여유)", location: "The Terrace",
+      prompt: "4:5 vertical selfie playing solitaire chess by candlelight in an empty ballroom after all the guests have left, a man with silver hair and pale blue eyes in an open black shirt moves a piece with two fingers, neck tattoo visible at his collar, glancing up at the camera with a composed, faintly amused look.",
+      en: "Everyone else went home hours ago. Didn't feel like following the rules tonight.",
+      ko: "다들 몇 시간 전에 집에 갔음. 오늘 밤은 규칙 따르고 싶지 않아서." },
+    { rank: null, name: "Patrick Lamothe (로맨틱/장난기)", location: "Downtown",
+      prompt: "4:5 vertical selfie balancing his gold medal on top of a champagne bottle at a rooftop afterparty, city lights behind him, a blond man with damp tousled hair caught mid-laugh, collar unbuttoned, glancing at the camera like he just won a second bet.",
+      en: "Medal's seen better centerpieces. Wasn't about to let that stop me.",
+      ko: "메달이 이것보다 나은 자리에 있어본 적은 없었음. 그래도 딱히 상관은 없었어." },
+    { rank: null, name: "Cassian Soltari (신비/위험)", location: "The Battlefield",
+      prompt: "4:5 vertical selfie kneeling by a dying campfire at the edge of a battlefield, front-lit by dim embers, a dark-haired warrior in shoulder armor wipes down his blade with a cloth, looking up sharply at the camera with a faint, dangerous smile.",
+      en: "Blade's clean. Can't say the same about tonight.",
+      ko: "칼은 깨끗해짐. 오늘 밤은 그렇다고 말 못 하겠지만." },
+    { rank: null, name: "Marcus Smith (다크/무심)", location: "Downtown",
+      prompt: "4:5 vertical selfie caught mid-vault over a chain-link fence at night, a man with dark hair and a faint neck tattoo has one hand still on the top bar, streetlight flaring behind him, laughing back over his shoulder at whoever's holding the camera.",
+      en: "Wasn't supposed to be here. Fence didn't stop me either.",
+      ko: "원래 여기 있으면 안 됐음. 울타리도 날 막진 못했지." },
+    { rank: null, name: "Daniel Carver (로맨틱/피곤함)", location: "Home",
+      prompt: "4:5 vertical selfie leaning against a humming dryer in an empty laundromat at 3am, a man with dark tousled hair has a basket of clean clothes at his feet, eyes half-closed, cracking one eye open at the camera with a lazy smile.",
+      en: "Laundry at 3am. Living my best life, clearly.",
+      ko: "새벽 3시에 빨래 중. 딱 봐도 잘 살고 있지." },
+    { rank: null, name: "Nico (다크/자신감)", location: "The Underground Club",
+      prompt: "4:5 vertical selfie tossing a set of car keys in the air and catching them without looking, a tattooed man in an unbuttoned white shirt walks away from a parked sports car at night, glancing back over his shoulder at the last second with a confident smirk.",
+      en: "Told him I'd be quick. Wasn't planning on looking back, but here we are.",
+      ko: "금방 온다고 했음. 뒤돌아볼 생각은 없었는데, 결국 이러네." },
+    { rank: null, name: "Noah (다크/묵직함)", location: "A Private Booth",
+      prompt: "4:5 vertical selfie sitting in a tattoo parlor chair at night, sleeve rolled up mid-session, a bald, heavily tattooed man with a full beard watches the camera with a calm, unbothered stare despite the artist's needle just out of frame.",
+      en: "Needle's still going. Figured you'd want to see it anyway.",
+      ko: "바늘 아직 안 끝남. 그래도 이건 보여주고 싶었음." },
+    { rank: null, name: "Julian Voss | CEO who texted the wrong person (로맨틱/능글)", location: "Corner Office",
+      prompt: "4:5 vertical selfie using his phone flashlight during a blacked-out hotel elevator, a blond man in a half-unbuttoned white shirt with his tie completely undone laughs at the absurdity of it, the glow lighting half his face as he looks at the camera.",
+      en: "Power's out. Turns out I'm calmer about chaos than people think.",
+      ko: "정전됐음. 생각보다 이런 상황에 침착한가 봐." },
+    { rank: null, name: "Deus Al-Masri (신비/여유)", location: "The Desert",
+      prompt: "4:5 vertical selfie practicing a knife throw at a target lashed to a dead tree under a star-filled desert sky, a bare-chested man with a blue headscarf whipping in the wind glances back at the camera mid-motion, the blade still spinning through the air.",
+      en: "Told the caravan I was resting. Old habits don't rest easy.",
+      ko: "쉬는 중이라고 했음. 근데 오래된 버릇은 쉽게 안 쉬어지네." }
+  ];
+
+  const rangeI = [
+    { rank: null, name: "Sam (모험/장난기)", location: "The Bazaar",
+      prompt: "4:5 vertical selfie in a torch-lit bazaar at night, a man with wavy brown hair and green eyes holds up an old brass key toward the camera, market stalls blurred behind him, a mischievous grin like he just picked someone's pocket.",
+      en: "Found this in someone's coat pocket. Not saying whose." },
+    { rank: null, name: "Rhys (신비/위험)", location: "The Forest",
+      prompt: "4:5 vertical selfie at the edge of a misty forest at night, moonlight catching his long silver hair, a pointed-eared warrior in a dark embroidered coat pauses mid-step, the scar around one eye glinting faintly, glancing at the camera with a level stare.",
+      en: "Told the court I was hunting. Wasn't really about the hunt tonight." },
+    { rank: null, name: "Dev Anand | the paramedic who checked in (로맨틱/피곤함)", location: "Downtown",
+      prompt: "4:5 vertical selfie leaning against the open back doors of an ambulance at night, city lights blurred behind him, a bearded man in a navy paramedic polo holds the radio mic loosely, exhaling like the shift's finally quiet, glancing at the camera with a tired half-smile.",
+      en: "Slow call, for once. Almost forgot what quiet sounds like." },
+    { rank: null, name: "Ozias Thorne (집착적 유혹)", location: "The Manor",
+      prompt: "4:5 vertical selfie standing at a tall arched window at night, a single candle lighting half his face, a pale man with silver hair and amber eyes glances back over his shoulder, black choker catching the flame, an unhurried, knowing smile.",
+      en: "Heard something moving downstairs. Wasn't in a rush to check." },
+    { rank: null, name: "Mateo | the firefighter who texted the wrong number (로맨틱/뿌듯함)", location: "The Firehouse",
+      prompt: "4:5 vertical selfie standing outside the firehouse at dawn, a coiled hose slung over one tattooed shoulder, a curly-haired bearded man in a soot-streaked navy tee wipes his brow, glancing at the camera with a spent, satisfied grin.",
+      en: "Long night. Everyone's out safe though, so worth it." },
+    { rank: null, name: "Damien Cross (로맨틱/여유)", location: "Home",
+      prompt: "4:5 vertical selfie at a backyard grill at dusk, smoke curling up behind him, a mature man with salt-and-pepper stubble in a flour-dusted apron over his shirt holds a pair of tongs, glancing at the camera with a relaxed, confident smile.",
+      en: "Told everyone dinner's in ten. It's going to be more like thirty." },
+    { rank: null, name: "August Marlowe (신비/로맨틱)", location: "Downtown",
+      prompt: "4:5 vertical selfie in a dim record store after hours, a man with dark curly hair and glowing violet eyes flips through a crate of vinyl, one sleeve pulled halfway out, glancing at the camera with a quiet, magnetic stare.",
+      en: "Was supposed to close up an hour ago. Got distracted again." },
+    { rank: null, name: "Ronan Vaelis (다크/위험)", location: "The Rooftop",
+      prompt: "4:5 vertical selfie standing on a rain-soaked rooftop at night, faint traces of violet light still fading from his fingertips, a black-haired man in a tattered dark coat faces the camera directly, breathing steady after whatever just happened.",
+      en: "That's handled. Don't ask what it cost me." },
+    { rank: null, name: "Damitri Volkov (다크/피곤함)", location: "Home",
+      prompt: "4:5 vertical selfie sitting at a kitchen table late at night, one arm through a half-on jacket, a graying, heavily tattooed man wraps both hands around a coffee mug, looking up at the camera with a tired, guarded look.",
+      en: "Couldn't sleep again. Didn't feel like being alone about it." },
+    { rank: null, name: "Peter (다정/수줍음)", location: "Home",
+      prompt: "4:5 vertical selfie at a desk lit by a single lamp at night, a man with long platinum hair and thick glasses pauses mid-sentence on a half-written letter, pen still in hand, looking up at the camera with a flustered, hopeful expression.",
+      en: "Started this three times already. Might actually send this version." }
+  ];
+
+  const rangeJ = [
+    { rank: null, name: "Leon | the sword-sworn who likes your quiet world (액션/훈련)", location: "The Training Grounds",
+      prompt: "4:5 vertical selfie in a torch-lit training courtyard at dawn, a bare-chested man with dark hair and an intricate mythological sleeve tattoo lowers his practice sword, breathing hard, glancing at the camera with a confident, winded grin.",
+      en: "Wore myself out at practice. Kept picturing you watching instead of the recruits." },
+    { rank: null, name: "Mateo | the mechanic who keeps finding reasons to text (로맨틱/여유)", location: "The Garage",
+      prompt: "4:5 vertical selfie standing in the open garage doorway at dusk, a bearded man with wavy brown hair wipes grease off his hands with a rag, car keys dangling from two fingers, glancing at the camera with a tired, easy smile.",
+      en: "Told you it'd be ready by five. Might've stalled just to see you again at five thirty." },
+    { rank: null, name: "Professor Aurelio | the only one who read past page forty (지적/여유)", location: "The Library",
+      prompt: "4:5 vertical selfie in a dim university library after hours, a dark-haired man in a half-buttoned white shirt with sleeves rolled up leans against a shelf of old books, one hand braced above his head, glancing at the camera with a slow, knowing smile.",
+      en: "Everyone else stopped reading after page forty. You're the reason I never do." },
+    { rank: null, name: "Callum Ashgrave (신비/위험)", location: "The Cathedral",
+      prompt: "4:5 vertical selfie walking through a candlelit cathedral corridor at night, purple light spilling from a stained-glass window behind him, a pale man with silver-streaked black hair and violet eyes glances back over his shoulder, coat trailing, a cold, magnetic stare.",
+      en: "Wasn't planning on being followed tonight. Not complaining though." },
+    { rank: null, name: "Dr. Daniel Brooks | better in person than his schedule looks (로맨틱/피곤함)", location: "Hospital",
+      prompt: "4:5 vertical selfie at a hospital vending machine at 3am, fluorescent light overhead, a man in navy surgical scrubs leans one shoulder against the machine, stethoscope draped around his neck, glancing at the camera with an exhausted, boyish grin.",
+      en: "Third coffee of my shift. Kept it together fine until your text came in." },
+    { rank: null, name: "Sebastian | the photographer who waits for the real you (로맨틱/여유)", location: "Downtown",
+      prompt: "4:5 vertical selfie on a city sidewalk at golden hour, a camera strap slung across his chest, a man with wavy brown hair adjusts the lens with one hand, glancing at the camera with a warm, unhurried smile like he already found what he was looking for.",
+      en: "Was chasing the light for a shoot. Got distracted taking this instead." },
+    { rank: null, name: "Azazel (다크/신비)", location: "The Manor",
+      prompt: "4:5 vertical selfie beneath a stone archway at night, a lantern casting warm light across his face, a pale man with dark curly hair and glowing amber eyes tilts his head, wrist tattoo catching the glow, an unreadable, patient smile.",
+      en: "Heard you were looking for a way out. Funny, so was I." },
+    { rank: null, name: "Kieran | the tattoo that wasn't just a tattoo (다크/신비)", location: "Downtown",
+      prompt: "4:5 vertical selfie in a booth at an empty diner at 2am, neon sign glow through the window, a dark-haired man in a black tank top traces one finger along his own tattooed forearm absently, glancing up at the camera with a quiet, searching look.",
+      en: "Someone asked about this tattoo again today. Still haven't told anyone the real reason but you." },
+    { rank: null, name: "Kellan Hart (로맨틱/뿌듯함)", location: "The Stadium",
+      prompt: "4:5 vertical selfie on an empty football field at dusk, stadium lights just flickering on behind him, a blond man in a dark practice jersey holds his helmet under one arm, grass-stained and grinning at the camera, catching his breath.",
+      en: "Coach kept us late again. Kept checking my phone the whole time hoping it was you." },
+    { rank: null, name: "Rourke | he has your phone and your secrets (집착적 유혹)", location: "Downtown",
+      prompt: "4:5 vertical selfie sitting on a fire escape at night, city lights below, a dark-haired man in a black tank top holds a phone loosely in one hand, tattooed arm draped over his knee, glancing at the camera with a slow, knowing smirk.",
+      en: "Found your phone on the table. Wasn't planning on giving it back right away." }
+  ];
+
+  const copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  const errorIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+  // Sandboxed artifact iframes often block the async Clipboard API silently.
+  // Fall back to the legacy textarea + execCommand trick, and if that also
+  // fails, select the prompt text so the user can copy it manually.
+  async function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        // fall through to legacy path
+      }
+    }
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      ta.style.left = "-9999px";
+      ta.setAttribute("readonly", "");
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (ok) return true;
+    } catch (err) {
+      // fall through to manual-select fallback
+    }
+    return false;
+  }
+
+  function renderCard(item) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const head = document.createElement("div");
+    head.className = "card-head";
+    head.innerHTML =
+      '<div>' +
+        (item.rank !== null ? '<div class="rank">#' + item.rank + '</div>' : '<div class="rank">NEW</div>') +
+        '<p class="name">' + item.name + '</p>' +
+      '</div>' +
+      '<span class="location">' + item.location + '</span>';
+    card.appendChild(head);
+
+    const promptBlock = document.createElement("div");
+    promptBlock.className = "prompt-block";
+    const promptText = document.createElement("p");
+    promptText.className = "prompt-text";
+    promptText.textContent = item.prompt;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-btn";
+    btn.innerHTML = copyIcon;
+    btn.setAttribute("aria-label", "프롬프트 복사");
+    btn.addEventListener("click", async () => {
+      const ok = await copyText(item.prompt);
+      if (ok) {
+        btn.innerHTML = checkIcon;
+        btn.classList.add("copied");
+        btn.setAttribute("aria-label", "복사됨");
+      } else {
+        btn.innerHTML = errorIcon;
+        btn.classList.add("error");
+        btn.setAttribute("aria-label", "복사 실패, 직접 선택해서 복사하세요");
+        try {
+          const range = document.createRange();
+          range.selectNodeContents(promptText);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (err) {}
+      }
+      setTimeout(() => {
+        btn.innerHTML = copyIcon;
+        btn.classList.remove("copied", "error");
+        btn.setAttribute("aria-label", "프롬프트 복사");
+      }, 2200);
+    });
+    promptBlock.appendChild(promptText);
+    promptBlock.appendChild(btn);
+    card.appendChild(promptBlock);
+
+    const captions = document.createElement("div");
+    captions.className = "captions";
+    captions.innerHTML =
+      '<div class="caption-row en"><span class="lang">EN</span><span class="text">' + item.en + '</span></div>' +
+      (item.ko ? '<div class="caption-row ko"><span class="lang">KO</span><span class="text">' + item.ko + '</span></div>' : '');
+    card.appendChild(captions);
+
+    return card;
+  }
+
+  document.getElementById("grid-1120").append(...rangeA.map(renderCard));
+  document.getElementById("grid-2130").append(...rangeC.map(renderCard));
+  document.getElementById("grid-4150").append(...rangeB.map(renderCard));
+  document.getElementById("grid-new").append(...rangeD.map(renderCard));
+  document.getElementById("grid-new2").append(...rangeE.map(renderCard));
+  document.getElementById("grid-new3").append(...rangeF.map(renderCard));
+  document.getElementById("grid-new4").append(...rangeG.map(renderCard));
+  document.getElementById("grid-existing5").append(...rangeH.map(renderCard));
+  document.getElementById("grid-existing6").append(...rangeI.map(renderCard));
+  document.getElementById("grid-charile").append(...rangeJ.map(renderCard));
+</script>
