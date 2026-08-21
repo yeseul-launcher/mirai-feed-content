@@ -278,7 +278,7 @@
   <header class="masthead">
     <p class="eyebrow">MIRAI · Feed Tab</p>
     <h1>피드 콘텐츠 프롬프트 라이브러리</h1>
-    <p>랭킹 11~30위, 41~50위 + 신규 캐릭터 40종 + 기존 캐릭터 추가 20종 + charile 계정 10종의 틴더/로맨스스캠 플렉스 톤 셀피 프롬프트 100종(20번 제외, 학생 캐릭터). 프롬프트 옆 아이콘을 누르면 클립보드에 복사됨. v12부터는 캡션 EN만(서비스 영어권 전용).</p>
+    <p>랭킹 11~30위, 41~50위 + 신규 캐릭터 40종 + 기존 캐릭터 추가 30종 + charile 계정 10종의 틴더/로맨스스캠 플렉스 톤 셀피 프롬프트 110종(20번 제외, 학생 캐릭터). 프롬프트 옆 아이콘을 누르면 클립보드에 복사됨. v12부터는 캡션 EN만(서비스 영어권 전용).</p>
   </header>
 
   <div class="section-heading">
@@ -340,6 +340,12 @@
     <span class="range">v13 · feed-content-image-v13-draft.md</span>
   </div>
   <div class="grid" id="grid-charile"></div>
+
+  <div class="section-heading">
+    <h2>기존 캐릭터 추가 10종 (8차)</h2>
+    <span class="range">v14 · feed-content-image-v14-draft.md</span>
+  </div>
+  <div class="grid" id="grid-existing8"></div>
 
   <footer class="note">
     전부 GPT Image용 프롬프트. 비율(4:5, 세로형 인스타 피드 그리드 비율)은 <code>--ar</code> 플래그 대신 문장 안에 "4:5 vertical crop"으로 직접 포함되어 있음. v12부터 캡션은 EN만.
@@ -757,6 +763,39 @@
       en: "Found your phone on the table. Wasn't planning on giving it back right away." }
   ];
 
+  const rangeK = [
+    { rank: null, name: "Rafe Ambrose Giovanni (마피아/위험)", location: "The Penthouse",
+      prompt: "4:5 vertical selfie standing at a floor-to-ceiling window overlooking the city at night, a heavily tattooed man with silver hair loosens his tie with one hand, city lights reflected across his bare chest, glancing back at the camera with a slow, dangerous smile.",
+      en: "Told my guys I needed air. Really just needed to see if you'd text back." },
+    { rank: null, name: "Ren | Basketball Player (로맨틱/뿌듯함)", location: "The Stadium",
+      prompt: "4:5 vertical selfie sitting alone on the bleachers after a late-night practice, a basketball resting beside him, a tattooed man with messy black hair wipes sweat from his brow, glancing at the camera with a tired, satisfied smirk.",
+      en: "Stayed for extra reps. Kept telling myself it wasn't because I was hoping you'd show up." },
+    { rank: null, name: "Sebastian: The Golden Viper (마피아/유혹)", location: "The Speakeasy",
+      prompt: "4:5 vertical selfie standing at a dim bar counter at night, a heavily tattooed blond man pours two glasses of whiskey side by side, gold chains catching the low light, glancing at the camera with a slow, knowing smile.",
+      en: "Poured two. Wasn't sure you'd actually come, but I hoped." },
+    { rank: null, name: "Olten Rox Quincy (다크/피곤함)", location: "Corner Office",
+      prompt: "4:5 vertical selfie on an office rooftop terrace at night, a tattooed man with dark hair leans on the railing, tie completely undone and hanging from one hand, city skyline behind him, glancing at the camera with a slow, tired smirk.",
+      en: "Everyone else left an hour ago. Was hoping you'd text before I did too." },
+    { rank: null, name: "Ikehara (다크/신비)", location: "Downtown",
+      prompt: "4:5 vertical selfie leaning against a brick wall outside a music venue at night, a man with messy black hair and an ornate ear cuff tilts his head close to the camera, chain necklace swinging, a quiet, searching stare.",
+      en: "Show ran long. Kept checking the door hoping it was you walking in." },
+    { rank: null, name: "Cato (신비/위험)", location: "The Manor",
+      prompt: "4:5 vertical selfie in a dim study at night, a thin thread of blue light curling between his fingers, a dark-haired man in a black suit glances up at the camera with a controlled, faintly amused smile, the light reflecting in his eyes.",
+      en: "Wasn't supposed to show anyone this. Guess I wanted you to see it anyway." },
+    { rank: null, name: "Marcus (로맨틱/장난기)", location: "Downtown",
+      prompt: "4:5 vertical selfie leaning out a car window at a red light at night, a man with messy dark hair and a rose tattoo on his neck grins at the camera around a cigarette, city lights blurring behind him.",
+      en: "Light's about to change. Kind of wanted an excuse to text you before it did." },
+    { rank: null, name: "Julian Romano (로맨틱/여유)", location: "Downtown",
+      prompt: "4:5 vertical selfie leaning against the hood of a car at night, a dark-haired man in an open black shirt holds his phone loosely, city lights glowing behind him, glancing at the camera with a quiet, deliberate stare.",
+      en: "Was going to call. Figured this said it better." },
+    { rank: null, name: "Jake | Fire Fighter (귀엽고 다정한 톤)", location: "The Firehouse",
+      prompt: "4:5 vertical selfie sitting on the firehouse steps at the end of his shift, the same puppy curled up asleep in his lap, a tattooed man in an open uniform jacket glances up at the camera with a warm, boyish grin.",
+      en: "Shift's finally over. Kind of wanted you to meet him before I head home." },
+    { rank: null, name: "Sire Baldric (신비/헌신)", location: "The Cathedral",
+      prompt: "4:5 vertical selfie kneeling at a candlelit chapel altar at night, his sword laid flat before him, a dark-haired knight with his helmet off looks up at the camera with a solemn, devoted stare that softens at the edges.",
+      en: "Meant to pray for the kingdom tonight. Ended up thinking about you instead." }
+  ];
+
   const copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
   const checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   const errorIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
@@ -866,4 +905,5 @@
   document.getElementById("grid-existing5").append(...rangeH.map(renderCard));
   document.getElementById("grid-existing6").append(...rangeI.map(renderCard));
   document.getElementById("grid-charile").append(...rangeJ.map(renderCard));
+  document.getElementById("grid-existing8").append(...rangeK.map(renderCard));
 </script>

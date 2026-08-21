@@ -1,6 +1,6 @@
 # MIRAI Feed Content, 전체 프롬프트 라이브러리
 
-생성 이미지 프롬프트 + 캡션 + 장소, 배치별 정리. 총 100개.
+생성 이미지 프롬프트 + 캡션 + 장소, 배치별 정리. 총 110개.
 
 ## 랭킹 11-20 (v5)
 
@@ -619,5 +619,59 @@
 - 장소: Downtown
 - 프롬프트: 4:5 vertical selfie sitting on a fire escape at night, city lights below, a dark-haired man in a black tank top holds a phone loosely in one hand, tattooed arm draped over his knee, glancing at the camera with a slow, knowing smirk.
 - 캡션(EN): Found your phone on the table. Wasn't planning on giving it back right away.
+
+---
+
+## 기존 캐릭터 추가 8차 (v14)
+
+### 1. Rafe Ambrose Giovanni (마피아/위험)
+- 장소: The Penthouse
+- 프롬프트: 4:5 vertical selfie standing at a floor-to-ceiling window overlooking the city at night, a heavily tattooed man with silver hair loosens his tie with one hand, city lights reflected across his bare chest, glancing back at the camera with a slow, dangerous smile.
+- 캡션(EN): Told my guys I needed air. Really just needed to see if you'd text back.
+
+### 2. Ren | Basketball Player (로맨틱/뿌듯함)
+- 장소: The Stadium
+- 프롬프트: 4:5 vertical selfie sitting alone on the bleachers after a late-night practice, a basketball resting beside him, a tattooed man with messy black hair wipes sweat from his brow, glancing at the camera with a tired, satisfied smirk.
+- 캡션(EN): Stayed for extra reps. Kept telling myself it wasn't because I was hoping you'd show up.
+
+### 3. Sebastian: The Golden Viper (마피아/유혹)
+- 장소: The Speakeasy
+- 프롬프트: 4:5 vertical selfie standing at a dim bar counter at night, a heavily tattooed blond man pours two glasses of whiskey side by side, gold chains catching the low light, glancing at the camera with a slow, knowing smile.
+- 캡션(EN): Poured two. Wasn't sure you'd actually come, but I hoped.
+
+### 4. Olten Rox Quincy (다크/피곤함)
+- 장소: Corner Office
+- 프롬프트: 4:5 vertical selfie on an office rooftop terrace at night, a tattooed man with dark hair leans on the railing, tie completely undone and hanging from one hand, city skyline behind him, glancing at the camera with a slow, tired smirk.
+- 캡션(EN): Everyone else left an hour ago. Was hoping you'd text before I did too.
+
+### 5. Ikehara (다크/신비)
+- 장소: Downtown
+- 프롬프트: 4:5 vertical selfie leaning against a brick wall outside a music venue at night, a man with messy black hair and an ornate ear cuff tilts his head close to the camera, chain necklace swinging, a quiet, searching stare.
+- 캡션(EN): Show ran long. Kept checking the door hoping it was you walking in.
+
+### 6. Cato (신비/위험)
+- 장소: The Manor
+- 프롬프트: 4:5 vertical selfie in a dim study at night, a thin thread of blue light curling between his fingers, a dark-haired man in a black suit glances up at the camera with a controlled, faintly amused smile, the light reflecting in his eyes.
+- 캡션(EN): Wasn't supposed to show anyone this. Guess I wanted you to see it anyway.
+
+### 7. Marcus (로맨틱/장난기)
+- 장소: Downtown
+- 프롬프트: 4:5 vertical selfie leaning out a car window at a red light at night, a man with messy dark hair and a rose tattoo on his neck grins at the camera around a cigarette, city lights blurring behind him.
+- 캡션(EN): Light's about to change. Kind of wanted an excuse to text you before it did.
+
+### 8. Julian Romano (로맨틱/여유)
+- 장소: Downtown
+- 프롬프트: 4:5 vertical selfie leaning against the hood of a car at night, a dark-haired man in an open black shirt holds his phone loosely, city lights glowing behind him, glancing at the camera with a quiet, deliberate stare.
+- 캡션(EN): Was going to call. Figured this said it better.
+
+### 9. Jake | Fire Fighter (귀엽고 다정한 톤)
+- 장소: The Firehouse
+- 프롬프트: 4:5 vertical selfie sitting on the firehouse steps at the end of his shift, the same puppy curled up asleep in his lap, a tattooed man in an open uniform jacket glances up at the camera with a warm, boyish grin.
+- 캡션(EN): Shift's finally over. Kind of wanted you to meet him before I head home.
+
+### 10. Sire Baldric (신비/헌신)
+- 장소: The Cathedral
+- 프롬프트: 4:5 vertical selfie kneeling at a candlelit chapel altar at night, his sword laid flat before him, a dark-haired knight with his helmet off looks up at the camera with a solemn, devoted stare that softens at the edges.
+- 캡션(EN): Meant to pray for the kingdom tonight. Ended up thinking about you instead.
 
 ---

@@ -1,6 +1,6 @@
 # MIRAI Feed Content
 
-MIRAI Feed 탭용 이미지 생성 프롬프트 + 캡션 + 장소 라이브러리. 총 100개 캐릭터.
+MIRAI Feed 탭용 이미지 생성 프롬프트 + 캡션 + 장소 라이브러리. 총 110개 캐릭터.
 
 - `PROMPTS.md`: 전체 프롬프트/캡션/장소 텍스트 (배치별 정리)
 - `mirai-feed-prompts.html`: 브라우저에서 바로 열어보는 버전, 프롬프트 옆 복사 버튼 포함
